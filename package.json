@@ -1,0 +1,46 @@
+{
+  "name": "customdonutchart",
+  "widgetName": "CustomDonutChart",
+  "version": "1.0.0",
+  "description": "My widget description",
+  "copyright": "© Mendix Technology BV 2022. All rights reserved.",
+  "author": "Asad Khan",
+  "engines": {
+    "node": ">=16"
+  },
+  "license": "1.0.0",
+  "config": {
+    "projectPath":  "C:\\\\Users\\\\lenovo\\\\Documents\\\\Mendix\\\\REFA-Admin-AK_api_integration_stable",
+    "mendixHost": "http://localhost:8080",
+    "developmentPort": 3000
+  },
+  "packagePath": "s4-digital",
+  "scripts": {
+    "start": "pluggable-widgets-tools start:server",
+    "dev": "pluggable-widgets-tools start:web",
+    "build": "pluggable-widgets-tools build:web",
+    "lint": "pluggable-widgets-tools lint",
+    "lint:fix": "pluggable-widgets-tools lint:fix",
+    "prerelease": "npm run lint",
+    "release": "pluggable-widgets-tools release:web"
+  },
+  "devDependencies": {
+    "@mendix/pluggable-widgets-tools": "^10.15.0",
+    "@types/big.js": "^6.0.2"
+  },
+  "dependencies": {
+    "apexcharts": "^4.7.0",
+    "classnames": "^2.2.6",
+    "react-apexcharts": "^1.7.0"
+  },
+  "resolutions": {
+    "react": "^18.2.0",
+    "@types/react": "^18.2.0",
+    "react-native": "0.72.7"
+  },
+  "overrides": {
+    "react": "^18.2.0",
+    "@types/react": "^18.2.0",
+    "react-native": "0.72.7"
+  }
+}
