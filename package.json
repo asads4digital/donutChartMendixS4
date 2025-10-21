@@ -10,7 +10,7 @@
   },
   "license": "1.0.0",
   "config": {
-    "projectPath":  "C:\\\\Users\\\\lenovo\\\\Documents\\\\Mendix\\\\REFA-Admin-AK_api_integration_stable",
+    "projectPath": "C:\\\\Users\\\\umair\\\\Desktop\\\\REFA-Admin-DEV",
     "mendixHost": "http://localhost:8080",
     "developmentPort": 3000
   },

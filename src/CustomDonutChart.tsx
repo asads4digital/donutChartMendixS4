@@ -1,27 +1,24 @@
-import { ReactElement, createElement, 
-    // useCallback
- } from "react";
+import {
+    ReactElement, createElement,
+} from "react";
 
 import { CustomDonutChartContainerProps } from "../typings/CustomDonutChartProps";
-// import { BadgeSample } from "./components/BadgeSample";
 import "./ui/CustomDonutChart.css";
 import { DonutChart } from "./components/DonutChart/DonutChart";
 
 export function CustomDonutChart(
- props: CustomDonutChartContainerProps
+    props: CustomDonutChartContainerProps
 ): ReactElement {
-    const { 
+    const {
         occupiedUnits,
         vaccantUnits,
-        // customdonutchartType, customdonutchartValue, valueAttribute, onClickAction, style, bootstrapStyle 
     } = props;
-    // const onClickHandler = useCallback(() => {
-    //     if (onClickAction && onClickAction.canExecute) {
-    //         onClickAction.execute();
-    //     }
-    // }, [onClickAction]);
 
     return (
-     <DonutChart occupiedUnits={occupiedUnits} vaccantUnits={vaccantUnits}/>
+        <DonutChart occupiedUnits={occupiedUnits} vaccantUnits={vaccantUnits} />
+    //     <DonutChart
+    //     occupiedUnits={{ value: 75 }}
+    //     vaccantUnits={{ value: 25 }}
+    // />
     );
 }
