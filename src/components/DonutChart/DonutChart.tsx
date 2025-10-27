@@ -1,67 +1,95 @@
-import { ReactElement, createElement, useEffect, useState, useRef } from "react";
+import { ReactElement, createElement, useEffect, useState } from "react";
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
-import "./styles.css";
+import './styles.css'
 
 interface DonutChartProps {
     occupiedUnits: any;
     vaccantUnits: any;
 }
-
 export function DonutChart({ occupiedUnits, vaccantUnits }: DonutChartProps): ReactElement {
-    const [occ, setOcc] = useState(0);
-    const [vac, setVac] = useState(0);
-    const [chartHeight, setChartHeight] = useState(250);
-    const containerRef = useRef<HTMLDivElement>(null);
+    const [widthState, setWidthState] = useState<number>(0);
+    const [heightState, setHeightState] = useState(0);
+    const [occupiedUnitsState, setOccupiedunitsState] = useState<number>(0);
+    const [vaccantUnitsState, setvaccantUnitsState] = useState<number>(0);
 
-    /* ---------- data ---------- */
     useEffect(() => {
-        if (occupiedUnits?.value != null) setOcc(Number(occupiedUnits.value));
-    }, [occupiedUnits]);
-    useEffect(() => {
-        if (vaccantUnits?.value != null) setVac(Number(vaccantUnits.value));
-    }, [vaccantUnits]);
+        const el = document.querySelector(".setWidgetWidthDonut") as HTMLElement | null;
 
-    const total = occ + vac;
-    const series = [occ, vac];
-
-    /* ---------- resize ---------- */
-    useEffect(() => {
-        const el = containerRef.current;
-        if (!el) return;
-
-        const ro = new ResizeObserver(([e]) => {
-            const h = e.contentRect.height;
-            setChartHeight(Math.max(h - 70, 200)); // 70 px = title + legend
-        });
-        ro.observe(el);
-        return () => ro.disconnect();
+        if (el) {
+            setWidthState(el?.offsetWidth);
+            setHeightState(el?.offsetHeight);
+        }
     }, []);
 
-    /* ---------- Apex options ---------- */
-    const options: ApexOptions = {
-        chart: { type: "donut" },
+    useEffect(() => {
+        if (occupiedUnits) {
+            setOccupiedunitsState(Number(occupiedUnits.value));
+        }
+    }, [occupiedUnits]);
+
+    useEffect(() => {
+        if (vaccantUnits) {
+            setvaccantUnitsState(Number(vaccantUnits.value));
+        }
+    }, [vaccantUnits]);
+
+    const total = occupiedUnitsState + vaccantUnitsState;
+
+    const chartOptions: ApexOptions = {
+        chart: {
+            type: "donut"
+        },
         labels: ["Occupied Units", "Vacant Units"],
         colors: ["#A39161", "#EAD69F"],
-        stroke: { show: false },
-        dataLabels: { enabled: true,
-                     formatter: (_, o) => o.w.config.series[o.seriesIndex].toLocaleString() },
-        tooltip: {
-            custom: ({ series, seriesIndex, w }) => {
-                const val = series[seriesIndex];
-                const pct = total ? ((val / total) * 100).toFixed(1) : "0.0";
-                return `<div class="apex-tooltip-custom"><strong>${w.globals.labels[seriesIndex]}</strong>: ${pct}%</div>`;
+        stroke: {
+            show: false,
+            width: 0
+        },
+        dataLabels: {
+            enabled: true,
+            formatter: function (_, opts) {
+                const value = opts.w.config.series[opts.seriesIndex];
+                return value.toLocaleString(); // Slice label shows raw value
             }
         },
-        legend: { position: "bottom", horizontalAlign: "center", fontSize: "16px" },
+        tooltip: {
+            custom: function ({ series, seriesIndex, w }) {
+                const value = series[seriesIndex];
+                const total = series.reduce((acc: any, val: any) => acc + val, 0);
+                const percent = ((value / total) * 100).toFixed(1);
+
+                const label = w.globals.labels[seriesIndex];
+
+                return `<div class="apex-tooltip-custom"}>
+            <strong>${label}</strong>: ${percent}%</div>`;
+            }
+        },
+        legend: {
+            position: "bottom",
+            horizontalAlign: "center",
+            fontSize: "14px"
+        },
         plotOptions: {
             pie: {
                 donut: {
                     labels: {
                         show: true,
-                        name: { show: true, fontSize: "16px", color: "#333", offsetY: -10 },
-                        value: { show: true, fontSize: "24px", fontWeight: "bold", color: "#A39161",
-                                 formatter: v => Number(v).toLocaleString() },
+                        name: {
+                            show: true,
+                            fontSize: "16px",
+                            color: "#333",
+                            offsetY: -10
+                        },
+                        value: {
+                            show: true,
+                            fontSize: "24px",
+                            fontWeight: "bold",
+                            color: "#A39161",
+                            formatter: function (val: any) {
+                                return parseInt(val).toLocaleString();
+                            }
+                        },
                         total: {
                             show: true,
                             showAlways: true,
@@ -69,57 +97,39 @@ export function DonutChart({ occupiedUnits, vaccantUnits }: DonutChartProps): Re
                             fontSize: "14px",
                             fontWeight: 600,
                             color: "#000",
-                            formatter: () => total.toLocaleString()
+                            formatter: function () {
+                                return total.toLocaleString();
+                            }
                         }
                     }
                 }
             }
         },
-        responsive: [{ breakpoint: 480, options: { chart: { width: 250 } } }]
+        responsive: [
+            {
+                breakpoint: 480,
+                options: {
+                    chart: {
+                        width: 300
+                    },
+                    legend: {
+                        position: "bottom"
+                    }
+                }
+            }
+        ]
     };
 
+    const chartSeries = [occupiedUnitsState, vaccantUnitsState];
     return (
-        <div
-            ref={containerRef}
-            style={{
-                width: "100%",
-                height: "100%",
-                minHeight: 260,
-                display: "flex",
-                flexDirection: "column"
-            }}
-        >
-            <div style={{
-                flex: "0 0 auto",
-                textAlign: "center",
-                marginBottom: 15,
-                fontWeight: 600,
-                fontSize: 14,
-                color: "#333"
-            }}>
-                 Occupied vs Vacant Units
-            </div>
-
-            {total > 0 ? (
-                <Chart
-                    options={options}
-                    series={series}
-                    type="donut"
-                    width="100%"
-                    height={chartHeight}
-                />
-            ) : (
-                <div style={{
-                    flex: 1,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    color: "#999",
-                    fontSize: 14
-                }}>
-                    No data available
-                </div>
-            )}
+        <div>
+            <Chart
+                options={chartOptions}
+                series={chartSeries}
+                type="donut"
+                width={widthState - 80}
+                height={heightState - 150}
+            />
         </div>
     );
 }
